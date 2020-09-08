@@ -1,20 +1,19 @@
-﻿using System;
-using System.Text;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using System.Net;
 
 namespace CurrencyCourses
 {
-    class Program
+    internal class Program
     {
-        static void Main()
+        private static void Main()
         {
             Core.MainOutput();
             Console.ReadKey();
         }
-        
     }
+
     public class Core
     {
         public class Root
@@ -22,15 +21,24 @@ namespace CurrencyCourses
             public Dictionary<string, double> Rates = new Dictionary<string, double>();
             public string Base { get; set; }
             public string date { get; set; }
-
         }
+
         public class Deserializer
         {
-            public Deserializer() { defaultValute = ""; defaultValuteIsEnabled = false; }
-            public Deserializer(string defaultValute) { this.defaultValute = defaultValute; defaultValuteIsEnabled = true; }
-            bool defaultValuteIsEnabled;
-            string defaultValute;
-            public Dictionary<string, double> mainDictionary(string defaultValute,bool defaultValuteIsEnabled)
+            public Deserializer()
+            {
+                defaultValute = ""; defaultValuteIsEnabled = false;
+            }
+
+            public Deserializer(string defaultValute)
+            {
+                this.defaultValute = defaultValute; defaultValuteIsEnabled = true;
+            }
+
+            private bool defaultValuteIsEnabled;
+            private string defaultValute;
+
+            public Dictionary<string, double> mainDictionary(string defaultValute, bool defaultValuteIsEnabled)
             {
                 if (defaultValuteIsEnabled)
                 {
@@ -46,13 +54,14 @@ namespace CurrencyCourses
                     Valuelist = JsonConvert.DeserializeObject<Root>(json);
                     return Valuelist.Rates;
                 }
-              
             }
+
             //полный буллщит, но по другому я не сообразил xD
             public Dictionary<string, double> Returner()
             {
                 return mainDictionary(defaultValute, defaultValuteIsEnabled);
             }
+
             private static string APIResponse(string defaultValute) //получение json из API ExchangeRates для получения курсов валют относительно выбранной валюты
             {
                 string Url = "https://api.exchangeratesapi.io/latest?base=" + defaultValute;
@@ -60,6 +69,7 @@ namespace CurrencyCourses
                 string Response = WebClient.DownloadString(Url);
                 return Response;
             }
+
             private static string APIResponse() //получение json из API ExchangeRates для получения списка валют
             {
                 string Url = "https://api.exchangeratesapi.io/latest";
@@ -69,10 +79,8 @@ namespace CurrencyCourses
             }
         }
 
-
         public static void MainOutput()//вывод
         {
-            
             //Вывод шапки
             DateTime dateTime = DateTime.Now;
             Console.WriteLine($"Привет, я занимаюсь показом курсов валют, относительно выбранной валюты.\nCегодня {dateTime.ToString()}");
@@ -85,7 +93,8 @@ namespace CurrencyCourses
                 Console.Write($"{kvp.Key}\t");
             }
             // Установка дефолтной валюты
-            while (true) {
+            while (true)
+            {
                 Console.Write("\nДефолтная валюта: ");
                 string defaultValute = Console.ReadLine().ToUpper();
                 if (string.IsNullOrWhiteSpace(defaultValute))
@@ -93,7 +102,7 @@ namespace CurrencyCourses
                     Console.WriteLine("Валюта не выбрана.");
                     continue;
                 }
-                else if (Valuelist.ContainsKey(defaultValute) || defaultValute=="EUR")
+                else if (Valuelist.ContainsKey(defaultValute) || defaultValute == "EUR")
                 {
                     Deserializer dict = new Deserializer(defaultValute);
                     Dictionary<string, double> Courses = dict.Returner();
@@ -111,7 +120,7 @@ namespace CurrencyCourses
                             }
                             break;
                         }
-                        Console.WriteLine($"{valute} value = {Math.Round(Courses[valute],2)}.");
+                        Console.WriteLine($"{valute} value = {Math.Round(Courses[valute], 2)}.");
                         break;
                     }
                 }
@@ -122,7 +131,6 @@ namespace CurrencyCourses
                 }
                 break;
             }
-            
         }
     }
 }
