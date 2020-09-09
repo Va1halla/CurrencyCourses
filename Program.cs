@@ -102,7 +102,7 @@ namespace CurrencyCourses
                     Console.WriteLine("Валюта не выбрана.");
                     continue;
                 }
-                else if (Valuelist.ContainsKey(defaultValute) || defaultValute == "EUR")
+                else if (Valuelist.ContainsKey(defaultValute) || defaultValute == "EUR") //костыль, ибо EUR нет в дикте, т.к евро является дефолтным значением возвращаемым апи
                 {
                     Deserializer dict = new Deserializer(defaultValute);
                     Dictionary<string, double> Courses = dict.Returner();
@@ -113,7 +113,7 @@ namespace CurrencyCourses
                         string valute = Console.ReadLine().ToUpper();
                         if (string.IsNullOrWhiteSpace(valute))
                         {
-                            //вывод выглядит по уродски(
+                            //не вывод, а порнография какая-то ей богу блять, потом переделать
                             foreach (KeyValuePair<string, double> kvp in Courses)
                             {
                                 Console.WriteLine($"\t{kvp.Key} - {Math.Round(kvp.Value, 2)}");
