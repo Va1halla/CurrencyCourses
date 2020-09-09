@@ -35,8 +35,8 @@ namespace CurrencyCourses
                 this.defaultValute = defaultValute; defaultValuteIsEnabled = true;
             }
 
-            private bool defaultValuteIsEnabled;
-            private string defaultValute;
+            public bool defaultValuteIsEnabled { get; set; }
+            public string defaultValute { get; set; }
 
             public Dictionary<string, double> mainDictionary(string defaultValute, bool defaultValuteIsEnabled)
             {
